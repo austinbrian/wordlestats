@@ -1,0 +1,28 @@
+display_information:
+  name: WordleStats
+features:
+  app_home:
+    home_tab_enabled: true
+    messages_tab_enabled: true
+    messages_tab_read_only_enabled: false
+  bot_user:
+    display_name: WordleBot
+    always_online: true
+  slash_commands:
+    - command: /zork
+      url: https://example.com/slack/slash/please
+      description: You are standing in an open field west of a white house, with a boarded front door. There is a small mailbox here.
+      usage_hint: /zork open mailbox
+      should_escape: false
+oauth_config:
+  redirect_urls:
+    - https://example.com/slack/auth
+  scopes:
+    bot:
+      - commands
+      - chat:write
+      - chat:write.public
+settings:
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false
