@@ -33,7 +33,8 @@ def read_bottest(client):
 
 
 def get_messages_from_conv_history(data: dict):
-    return data.get("messages")
+    # return data.get("messages")
+    pass
 
 
 def extract_wordle_conversations(messages: list):
@@ -60,6 +61,10 @@ def get_game_number(txt):
 
 
 def get_attempt_details(txt: str) -> dict:
+    """
+    Attempt details are the the summary information available as a
+    "heading" in the Wordle instance.
+    """
     attempts = {"attempts": 0, "success": False, "hard": False}
     num = re.search("[\dX]/6.?", txt).group(0)
     if num:
@@ -77,7 +82,16 @@ def get_attempt_details(txt: str) -> dict:
         pass
 
 
-def process_wordle_entry(txt):
+def get_guess_details(txt: str):
+    """
+    This function extracts information about the individual guesses (the squares)
+    that are included in a wordle attempt.
+    """
+    # TODO
+    pass
+
+
+def process_wordle_entry(entry: dict):
     entry = dict()
     wscore_text = re.findall("Wordle \d+ [\dX]/6*?\n", txt)
     print(wscore_text)
@@ -87,6 +101,14 @@ def process_wordle_entry(txt):
         attempts = get_attempt_details(wscore_text)
 
     return entry
+
+
+def get_team_members_list(client):
+    return client.users_list().data.get("members")
+
+
+def id_to_name_map(id: str, mems: list, name="name"):
+    return {i.get("id"): i.get(name) for i in mems}
 
 
 if __name__ == "__main__":

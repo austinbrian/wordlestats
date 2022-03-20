@@ -8,6 +8,11 @@ def bottest_conversation_object():
 
 
 @pytest.fixture
+def members_list():
+    return wordle.get_team_members_list(wordle.client)
+
+
+@pytest.fixture
 def bottest_messages(bottest_conversation_object):
     messages = bottest_conversation_object.get("messages")
     assert type(messages) == list
@@ -36,7 +41,7 @@ def test_get_game_number(wordle_bottest_messages):
     assert wordle.get_game_number(wordle_bottest_messages[0].get("text")) == "259"
 
 
-def test_get_attempt_detail(wordle_bottest_messages):
+def test_get_attempt_details(wordle_bottest_messages):
     assert wordle.get_attempt_details("Wordle 234 5/6*\n") == {
         "success": True,
         "attempts": 5,
@@ -63,3 +68,13 @@ def test_get_attempt_detail(wordle_bottest_messages):
         "hard": True,
         "game": "259",
     }
+
+
+def test_id_to_name_map(members_list):
+    mem_map = wordle.id_to_name_map(id="USLACKBOT", mems=members_list, name="name")
+    assert type(mem_map) == dict
+    assert "USLACKBOT" in mem_map.keys()
+    assert mem_map["USLACKBOT"] == "slackbot"
+
+    map2 = wordle.id_to_name_map(id="USLACKBOT", mems=members_list, name="real_name")
+    assert map2["USLACKBOT"] == "Slackbot"
