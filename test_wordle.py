@@ -3,8 +3,24 @@ import pytest
 
 
 @pytest.fixture
-def bottest_conversation_object():
-    return wordle.read_bottest(wordle.client)
+def BOTTEST_ID():
+    return "C035T6TT4LS"
+
+
+@pytest.fixture
+def client():
+    return wordle.client
+
+
+def test_get_messages_from_conv_history(client, BOTTEST_ID):
+    msgs = wordle.get_messages_from_conv_history(client, BOTTEST_ID)
+    assert type(msgs) == list
+    assert len(msgs) > 1
+
+
+@pytest.fixture
+def bottest_conversation_object(client, BOTTEST_ID):
+    return client.conversations_history(channel=BOTTEST_ID).data
 
 
 @pytest.fixture
@@ -78,3 +94,12 @@ def test_id_to_name_map(members_list):
 
     map2 = wordle.id_to_name_map(id="USLACKBOT", mems=members_list, name="real_name")
     assert map2["USLACKBOT"] == "Slackbot"
+
+
+def test_process_wordle_entry(wordle_bottest_messages):
+    entry = wordle.process_wordle_entry(wordle_bottest_messages[0])
+    assert "type" in entry.keys()
+    assert "attempts" in entry.keys()
+    assert entry["attempts"] == 3
+    assert entry["game"] == "259"
+    assert entry["hard"] == True

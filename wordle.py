@@ -1,40 +1,20 @@
+import logging
 import os
 import re
+
 from dotenv import load_dotenv
 from slack_sdk import WebClient
-import logging
-
-import slack_sdk
 
 load_dotenv()
 
 logging.basicConfig()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
-BOTTEST_ID = "C035T6TT4LS"
-
-BASEURL = "https://slack.com/api"
-
 client = WebClient(token=os.environ["BOT_TOKEN"])
 
 
-def test_write_bottest(client, text):
-    response = client.api_call(
-        api_method="chat.postMessage",
-        json={"channel": "C035T6TT4LS", "text": text},
-    )
-    assert response["ok"]
-    assert response["message"]["text"] == text
-    return
-
-
-def read_bottest(client):
-    return client.conversations_history(channel=BOTTEST_ID).data
-
-
-def get_messages_from_conv_history(data: dict):
-    # return data.get("messages")
-    pass
+def get_messages_from_conv_history(client, channel_id):
+    return client.conversations_history(channel=channel_id).data.get("messages", [])
 
 
 def extract_wordle_conversations(messages: list):
@@ -45,11 +25,6 @@ def extract_wordle_conversations(messages: list):
         else:
             pass
     return convs
-
-
-def get_number_of_guesses(wscore_text):
-    game_number, guesses = re.search("Wordle \d+", wscore_text)
-    print(game_number, guesses)
 
 
 def get_game_number(txt):
@@ -92,14 +67,8 @@ def get_guess_details(txt: str):
 
 
 def process_wordle_entry(entry: dict):
-    entry = dict()
-    wscore_text = re.findall("Wordle \d+ [\dX]/6*?\n", txt)
-    print(wscore_text)
-    if len(wscore_text) > 0:
-        game_num = get_game_number(wscore_text)
-        entry.update({"game": game_num})
-        attempts = get_attempt_details(wscore_text)
-
+    attempts = get_attempt_details(entry.get("text"))
+    entry.update(attempts)
     return entry
 
 
