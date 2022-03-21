@@ -1,5 +1,6 @@
-import wordle
 import pytest
+
+import wordle
 
 
 @pytest.fixture
@@ -77,6 +78,12 @@ def test_get_attempt_details(wordle_bottest_messages):
         "hard": True,
         "game": "424",
     }
+    assert wordle.get_attempt_details("Wordle 259 3/6*\n\n") == {
+        "success": True,
+        "attempts": 3,
+        "hard": True,
+        "game": "259",
+    }
 
     assert wordle.get_attempt_details(wordle_bottest_messages[0].get("text")) == {
         "success": True,
@@ -84,15 +91,27 @@ def test_get_attempt_details(wordle_bottest_messages):
         "hard": True,
         "game": "259",
     }
+    assert wordle.get_attempt_details("Wordle 666 6/6") == {
+        "success": True,
+        "attempts": 6,
+        "hard": False,
+        "game": "666",
+    }
+    assert wordle.get_attempt_details("Wordle 667 6/6*") == {
+        "success": True,
+        "attempts": 6,
+        "hard": True,
+        "game": "667",
+    }
 
 
 def test_id_to_name_map(members_list):
-    mem_map = wordle.id_to_name_map(id="USLACKBOT", mems=members_list, name="name")
+    mem_map = wordle.id_to_name_map(mems=members_list, name="name")
     assert type(mem_map) == dict
     assert "USLACKBOT" in mem_map.keys()
     assert mem_map["USLACKBOT"] == "slackbot"
 
-    map2 = wordle.id_to_name_map(id="USLACKBOT", mems=members_list, name="real_name")
+    map2 = wordle.id_to_name_map(mems=members_list, name="real_name")
     assert map2["USLACKBOT"] == "Slackbot"
 
 

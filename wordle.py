@@ -13,8 +13,10 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 client = WebClient(token=os.environ["BOT_TOKEN"])
 
 
-def get_messages_from_conv_history(client, channel_id):
-    return client.conversations_history(channel=channel_id).data.get("messages", [])
+def get_messages_from_conv_history(client, channel_id, **kwargs):
+    return client.conversations_history(channel=channel_id, **kwargs).data.get(
+        "messages", []
+    )
 
 
 def extract_wordle_conversations(messages: list):
@@ -41,14 +43,18 @@ def get_attempt_details(txt: str) -> dict:
     "heading" in the Wordle instance.
     """
     attempts = {"attempts": 0, "success": False, "hard": False}
-    num = re.search("[\dX]/6.?", txt).group(0)
+    # num = re.search("[\dX]/6.?", txt).group(0)
+    num, hard = re.split("/6", txt)
     if num:
         if "X" in num:
             attempts["attempts"] = 6
         else:
-            attempts["attempts"] = int(num.strip("/6*\n"))
+            try:
+                attempts["attempts"] = int(num[-1])
+            except ValueError:
+                print(num)
             attempts["success"] = True
-        if "*" in num:
+        if "*" in hard:
             attempts["hard"] = True
         attempts["game"] = get_game_number(txt)
 
@@ -76,7 +82,7 @@ def get_team_members_list(client):
     return client.users_list().data.get("members")
 
 
-def id_to_name_map(id: str, mems: list, name="name"):
+def id_to_name_map(mems: list, name="name"):
     return {i.get("id"): i.get(name) for i in mems}
 
 
