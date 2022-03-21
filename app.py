@@ -14,7 +14,7 @@ async def startup_event():
     # Load data, prepare graph
     global df
     df = make_df(msgs)
-    print("Loaded analysis dataframe into memory.")
+    print(f"Loaded {len(df)} entries into analysis dataframe into memory.")
 
 
 @app.get("/health")

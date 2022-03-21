@@ -1,4 +1,5 @@
 slack_sdk
 pandas
-dotenv
+python-dotenv
 fastapi
+uvicorn
