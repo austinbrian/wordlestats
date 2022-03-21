@@ -1,21 +1,21 @@
 import pandas as pd
-from argon2 import extract_parameters
 
 import wordle as wd
 
 WORDLE_CHANNEL_ID = "C02TCE39Y81"
 
 
-def main():
+def get_all_wordle_msgs():
     all_msgs = wd.get_messages_from_conv_history(
         wd.client, WORDLE_CHANNEL_ID, limit=1000
     )
     assert len(all_msgs) > 2
-    print(f"Number of messages: {len(all_msgs)}")
+    # print(f"Number of messages: {len(all_msgs)}")
 
     msgs = wd.extract_wordle_conversations(all_msgs)
 
-    print(f"Number of wordle-related messages: {len(msgs)}")
+    # print(f"Number of wordle-related messages: {len(msgs)}")
+    return msgs
 
 
 def make_df(msgs):
@@ -30,4 +30,4 @@ def make_df(msgs):
 
 
 if __name__ == "__main__":
-    main()
+    print("OK")
