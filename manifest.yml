@@ -1,5 +1,7 @@
 display_information:
   name: WordleStats
+  description: For keeping track
+  background_color: "#737373"
 features:
   app_home:
     home_tab_enabled: true
@@ -9,10 +11,9 @@ features:
     display_name: WordleBot
     always_online: true
   slash_commands:
-    - command: /zork
-      url: https://example.com/slack/slash/please
-      description: You are standing in an open field west of a white house, with a boarded front door. There is a small mailbox here.
-      usage_hint: /zork open mailbox
+    - command: /scoreboard
+      url: https://pasty-brigade-wordlestats.herokuapp.com/scoreboard
+      description: How YOU doin?
       should_escape: false
 oauth_config:
   redirect_urls:
@@ -20,8 +21,39 @@ oauth_config:
   scopes:
     bot:
       - commands
-      - chat:write
+      - app_mentions:read
+      - channels:history
+      - channels:join
+      - channels:manage
+      - channels:read
+      - chat:write.customize
       - chat:write.public
+      - chat:write
+      - files:read
+      - files:write
+      - groups:history
+      - groups:read
+      - groups:write
+      - im:history
+      - im:read
+      - im:write
+      - links:read
+      - links:write
+      - mpim:history
+      - mpim:read
+      - mpim:write
+      - pins:read
+      - pins:write
+      - reactions:read
+      - reactions:write
+      - reminders:read
+      - reminders:write
+      - team:read
+      - usergroups:read
+      - usergroups:write
+      - users:read
+      - users:write
+      - users.profile:read
 settings:
   org_deploy_enabled: false
   socket_mode_enabled: false
