@@ -5,8 +5,6 @@ import re
 from dotenv import load_dotenv
 from slack_sdk import WebClient
 
-from stats import WORDLE_CHANNEL_ID
-
 load_dotenv()
 
 logging.basicConfig()

@@ -26,7 +26,3 @@ async def healthcheck():
 @app.get("/scoreboard")
 async def scoreboard():
     return df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
-
-
-async def scoreboard():
-    return df.groupby("name")["attempts"].mean().sort_values().map("{:,.2f}".format)
