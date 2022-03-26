@@ -5,12 +5,15 @@ import re
 from dotenv import load_dotenv
 from slack_sdk import WebClient
 
+from stats import WORDLE_CHANNEL_ID
+
 load_dotenv()
 
 logging.basicConfig()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 client = WebClient(token=os.environ["BOT_TOKEN"])
+WORDLE_CHANNEL_ID = os.getenv("WORDLE_CHANNEL_ID")
 
 
 def get_messages_from_conv_history(client, channel_id, **kwargs):

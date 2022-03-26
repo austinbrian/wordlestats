@@ -2,12 +2,10 @@ import pandas as pd
 
 import wordle as wd
 
-WORDLE_CHANNEL_ID = "C02TCE39Y81"
-
 
 def get_all_wordle_msgs():
     all_msgs = wd.get_messages_from_conv_history(
-        wd.client, WORDLE_CHANNEL_ID, limit=1000
+        wd.client, wd.WORDLE_CHANNEL_ID, limit=1000
     )
     assert len(all_msgs) > 2
     # print(f"Number of messages: {len(all_msgs)}")
