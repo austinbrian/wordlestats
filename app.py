@@ -1,6 +1,9 @@
+import json
+
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
 
+import slack_formatting
 import wordle as wd
 from stats import get_all_wordle_msgs, make_df
 
@@ -25,4 +28,13 @@ async def healthcheck():
 @app.post("/scoreboard")
 @app.get("/scoreboard")
 async def scoreboard():
-    return df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
+    data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
+    txt = slack_formatting.main(data)
+    return json.loads(txt)
+
+
+@app.get("/formatting")
+async def formatting():
+    txt = slack_formatting.main()
+    j = json.loads(txt)
+    return j
