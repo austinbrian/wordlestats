@@ -32,28 +32,43 @@ def frontmatter():
 		},
 		{
 			"type": "section",
-			"fields": [
-				{
-					"type": "mrkdwn",
-					"text": "_Average score_"
-				}
-			]
+			"text": {
+				"type": "mrkdwn",
+				"text": "_Select a metric_"
+			},
+			"accessory": {
+				"type": "static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select an item",
+					"emoji": true
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Average Score",
+							"emoji": true
+						},
+						"value": "avg_score"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Number of Games",
+							"emoji": true
+						},
+						"value": "num_games"
+					}
+				],
+				"action_id": "metric-dropdown"
+			}
 		},
 		{
 			"type": "divider"
 		},
     """
     return txt
-
-
-def format_for_slack(results: dict) -> str:
-    out = frontmatter()
-    return out
-
-
-def simple_text_layout(results: dict) -> str:
-    out = "# Scoreboard\n\n"
-    return out
 
 
 def main(d={"kevin": 7, "emily": 4, "kellen": 3}):
