@@ -25,16 +25,30 @@ async def healthcheck():
     return "Healthy"
 
 
-@app.post("/scoreboard")
+@app.post("/api/scoreboard")
+async def api_scoreboard(payload):
+    if type(payload) == str:
+        payload = json.loads(payload)
+    action_val = (
+        payload.get("state")
+        .get("values")
+        .get("c5C")
+        .get("metric-dropdown")
+        .get("selected_option")
+        .get("value")
+    )
+    if action_val == "avg_score":
+        data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
+    elif action_val == "num_games":
+        data = df.groupby("name")["attemtps"].count().sort_values(ascending=False)
+    else:
+        data = {}
+    txt = slack_formatting.main(data)
+    return json.loads(txt)
+
+
 @app.get("/scoreboard")
 async def scoreboard():
     data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
     txt = slack_formatting.main(data)
     return json.loads(txt)
-
-
-@app.get("/formatting")
-async def formatting():
-    txt = slack_formatting.main()
-    j = json.loads(txt)
-    return j
