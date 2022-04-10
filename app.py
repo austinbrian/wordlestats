@@ -49,6 +49,7 @@ async def api_scoreboard(payload):
     return json.loads(txt)
 
 
+@app.post("/scoreboard")
 @app.get("/scoreboard")
 async def scoreboard():
     data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
