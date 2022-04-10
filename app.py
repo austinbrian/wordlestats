@@ -29,6 +29,7 @@ async def healthcheck():
 @app.post("/api/scoreboard")
 async def api_scoreboard(payload):
     logging.info(payload)
+    print(payload)
     if payload:
         if type(payload) == str:
             payload = json.loads(payload)
