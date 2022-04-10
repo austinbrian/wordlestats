@@ -18,7 +18,7 @@ async def startup_event():
 
     global df
     df = make_df(msgs)
-    print(f"Loaded {len(df)} entries into analysis dataframe into memory.")
+    logging.info(f"Loaded {len(df)} entries into analysis dataframe into memory.")
 
 
 @app.get("/health")
@@ -28,8 +28,12 @@ async def healthcheck():
 
 @app.post("/api/scoreboard")
 async def api_scoreboard(payload):
-    logging.info(payload)
-    print(payload)
+
+    form = await payload.form()
+    logging.info(form)
+    item = dict(**form)
+    logging.info(item)
+
     if payload:
         if type(payload) == str:
             payload = json.loads(payload)
