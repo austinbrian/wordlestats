@@ -1,4 +1,5 @@
 import json
+import logging
 
 from fastapi import FastAPI
 from fastapi_utils.tasks import repeat_every
@@ -27,6 +28,7 @@ async def healthcheck():
 
 @app.post("/api/scoreboard")
 async def api_scoreboard(payload):
+    logging.info(payload)
     if type(payload) == str:
         payload = json.loads(payload)
     action_val = (
@@ -37,9 +39,9 @@ async def api_scoreboard(payload):
         .get("selected_option")
         .get("value")
     )
-    if action_val == "avg_score":
+    if action_val == "num_games":
         data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
-    elif action_val == "num_games":
+    elif action_val == "avg_score":
         data = df.groupby("name")["attemtps"].count().sort_values(ascending=False)
     else:
         data = {}
