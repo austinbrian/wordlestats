@@ -42,7 +42,7 @@ async def api_scoreboard(payload):
     if action_val == "num_games":
         data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
     elif action_val == "avg_score":
-        data = df.groupby("name")["attemtps"].count().sort_values(ascending=False)
+        data = df.groupby("name")["attempts"].count().sort_values(ascending=False)
     else:
         data = {}
     txt = slack_formatting.main(data)
