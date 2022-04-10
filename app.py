@@ -1,7 +1,7 @@
 import json
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
 from fastapi_utils.tasks import repeat_every
 
 import slack_formatting
@@ -27,9 +27,9 @@ async def healthcheck():
 
 
 @app.post("/api/scoreboard")
-async def api_scoreboard(payload):
+async def api_scoreboard():
 
-    form = await payload.form()
+    form = json.loads(Request.form["payload"])
     logging.info(form)
     item = dict(**form)
     logging.info(item)
@@ -64,8 +64,7 @@ async def api_scoreboard(payload):
         return json.loads(txt)
 
 
-@app.post("/scoreboard")
-@app.get("/scoreboard")
+@app.route("/scoreboard", methods=["POST", "GET"])
 async def scoreboard():
     data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
     txt = slack_formatting.main(data)
