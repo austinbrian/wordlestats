@@ -2,13 +2,18 @@ import json
 import logging
 
 from fastapi import FastAPI, Request, Response
+from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi_utils.tasks import repeat_every
 
 import slack_formatting
 import wordle as wd
-from stats import get_all_wordle_msgs, make_df
+from dashboard import create_dash_app
+from data import get_all_wordle_msgs, make_df
 
 app = FastAPI()
+# server = app.server
+msgs = get_all_wordle_msgs()
+df = make_df(msgs)
 
 
 @app.on_event("startup")
@@ -27,9 +32,13 @@ async def healthcheck():
 
 
 @app.post("/api/scoreboard")
-async def api_scoreboard():
+async def api_scoreboard(request: Request):
 
-    form = json.loads(Request.form["payload"])
+    logging.info(request.form)
+    print(request.form)
+    print("*****")
+    form = request.form
+    # form = json.loads(request.form["payload"])
     logging.info(form)
     item = dict(**form)
     logging.info(item)
@@ -69,3 +78,10 @@ async def scoreboard():
     data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
     txt = slack_formatting.main(data)
     return json.loads(txt)
+
+
+external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
+dash_app = create_dash_app(
+    requests_pathname_prefix="/", external_stylesheets=external_stylesheets, df=df
+)
+app.mount("/", WSGIMiddleware(dash_app.server))

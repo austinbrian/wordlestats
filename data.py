@@ -24,6 +24,8 @@ def make_df(msgs):
     team_display_map = wd.id_to_name_map(team_members, "real_name")
     df["name"] = df.user.map(team_name_map)
     df["realname"] = df.user.map(team_display_map)
+    df["datetime"] = df.ts.apply(lambda x: pd.Timestamp(float(x), unit="s"))
+    df["game"] = df.game.apply(int)
     return df
 
 
