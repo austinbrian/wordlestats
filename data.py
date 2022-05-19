@@ -1,7 +1,9 @@
 import logging
 import os
+import ssl
 
 import pandas as pd
+from pydantic import create_model_from_namedtuple
 from sqlalchemy import create_engine
 
 import wordle as wd
@@ -40,9 +42,15 @@ def create_df():
         df = pd.read_sql_query("select * from wordlestats", con=conn)
     except Exception as e:
         logging.error(e)
-
-        msgs = get_all_wordle_msgs()
-        df = make_df(msgs)
+        try:
+            if DATABASE_URL.startswith("postgres://"):
+                DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+                conn = create_engine(DATABASE_URL, sslmode="require")
+                df = pd.read_sql_query("select * from wordlestats", con=conn)
+        except Exception as e:
+            logging.error(e)
+            msgs = get_all_wordle_msgs()
+            df = make_df(msgs)
     return df
 
 
