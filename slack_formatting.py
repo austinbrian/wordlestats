@@ -32,6 +32,34 @@ def frontmatter():
 		},
 		{
 			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "_Average score_"
+				}
+			]
+		},
+		{
+			"type": "divider"
+		},
+    """
+    return txt
+
+
+def frontmatter_with_selection():
+    txt = """
+{
+	"blocks": [
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": ":white_large_square::large_yellow_square::large_green_square: Scoreboard :large_green_square::large_yellow_square::white_large_square:",
+				"emoji": true
+			}
+		},
+		{
+			"type": "section",
 			"text": {
 				"type": "mrkdwn",
 				"text": "_Select a metric_"

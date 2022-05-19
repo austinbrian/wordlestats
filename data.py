@@ -1,4 +1,8 @@
+import logging
+import os
+
 import pandas as pd
+from sqlalchemy import create_engine
 
 import wordle as wd
 
@@ -27,6 +31,23 @@ def make_df(msgs):
     df["datetime"] = df.ts.apply(lambda x: pd.Timestamp(float(x), unit="s"))
     df["game"] = df.game.apply(int)
     return df
+
+
+def create_df():
+    try:
+        DATABASE_URL = os.environ["DATABASE_URL"]
+        conn = create_engine(DATABASE_URL)
+        df = pd.read_sql_query("select * from wordlestats", con=conn)
+    except Exception as e:
+        logging.error(e)
+
+        msgs = get_all_wordle_msgs()
+        df = make_df(msgs)
+    return df
+
+
+def pull_data_from_db(conn):
+    return pd.read_sql_query('select * from "wordlestats"', con=conn)
 
 
 if __name__ == "__main__":

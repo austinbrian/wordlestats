@@ -1,29 +1,34 @@
 import json
 import logging
 
-from fastapi import FastAPI, Request, Response
+import pandas as pd
+from fastapi import FastAPI, Request
 from fastapi.middleware.wsgi import WSGIMiddleware
 from fastapi_utils.tasks import repeat_every
+from sqlalchemy import create_engine
 
 import slack_formatting
 import wordle as wd
 from dashboard import create_dash_app
-from data import get_all_wordle_msgs, make_df
+from data import create_df, get_all_wordle_msgs, make_df
 
 app = FastAPI()
-# server = app.server
-msgs = get_all_wordle_msgs()
-df = make_df(msgs)
+
+df = create_df()
 
 
 @app.on_event("startup")
 @repeat_every(seconds=60 * 10)  # 10 minutes
 async def startup_event():
-    msgs = get_all_wordle_msgs()
-
     global df
-    df = make_df(msgs)
+    df = create_df()
     logging.info(f"Loaded {len(df)} entries into analysis dataframe into memory.")
+
+
+@app.get("/datainfo")
+async def datainfo():
+    df = create_df()
+    return df.describe()
 
 
 @app.get("/health")
@@ -73,7 +78,8 @@ async def api_scoreboard(request: Request):
         return json.loads(txt)
 
 
-@app.route("/scoreboard", methods=["POST", "GET"])
+@app.post("/scoreboard")
+@app.get("/scoreboard")
 async def scoreboard():
     data = df.groupby("name")["attempts"].mean().sort_values().map("{:,.3f}".format)
     txt = slack_formatting.main(data)
