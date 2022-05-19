@@ -8,3 +8,13 @@ def number_of_games_bar_graph(df):
         layout_title_text="Number of games played",
     )
     return fig
+
+
+def bar_graph_of_names(data, label):
+    keys = list(data.keys())
+    values = [float(x) for x in data.values()]
+    fig = go.Figure(
+        data=go.Bar(x=keys, y=values),
+        layout_title_text=label,
+    )
+    return fig
