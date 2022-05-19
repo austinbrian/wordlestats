@@ -45,7 +45,7 @@ def create_df():
         try:
             if DATABASE_URL.startswith("postgres://"):
                 DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-                conn = create_engine(DATABASE_URL, sslmode="require")
+                conn = create_engine(DATABASE_URL)
                 df = pd.read_sql_query("select * from wordlestats", con=conn)
         except Exception as e:
             logging.error(e)
